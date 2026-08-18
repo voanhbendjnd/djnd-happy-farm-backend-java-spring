@@ -1,6 +1,7 @@
 package djnd.happy.farm.security;
 
-import javax.naming.AuthenticationException;
+import org.springframework.security.core.AuthenticationException;
+
 import java.io.Serial;
 
 public class UserNotActivatedException extends AuthenticationException {

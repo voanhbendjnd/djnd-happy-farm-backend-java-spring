@@ -59,6 +59,8 @@ dependencies {
 	implementation("org.hibernate.orm:hibernate-jcache")
 	//kafka
 	implementation ("org.springframework.kafka:spring-kafka")
+	// Response follow format RFC7807
+	implementation("org.zalando:problem-spring-web-starter:0.29.1")
 
 
 

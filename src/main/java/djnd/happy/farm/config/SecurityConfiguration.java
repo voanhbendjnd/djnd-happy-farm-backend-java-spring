@@ -29,6 +29,26 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import javax.crypto.SecretKey;
 import java.util.List;
 
+/*
+* Workflow at oauth2 resource server
+* Step 1: Get token from request
+* - Filter chain security scanner HTTP Request find string with detail 'Authorization: Bearer <token>'
+* - If request authenticated -> smart authentication entry point
+* Step 2: Decode
+* - Decode token base on GuestAwareJwtDecoder
+* Step 3: Convert Claims to permission by JwtAuthenticationConverter
+* - After step 2, if Jwt valid, spring security activated JwtAuthenticationConverter:
+*   + Read Claims include permission info in token (often is claim authorities or scope)
+*   + Decide permission and convert it to GrantedAuthority [ROLE_ADMIN, ROLE_USER]
+*   + Convert to object JwtAuthenticationToken (include Principal (username or email), Credentials (password or secret key), Authorities)
+* Step 4: Save
+* - Spring security get object JwtAuthenticationToken base on step 3 save at SecurityContextHolder.getContext().setAuthentication(...)
+* - Request identify success, through Security Filter Chain -> RestController
+* Step 5: Handle error authentication
+* - If case token wrong or expired -> Filter get that exception and redirect to -> smart authentication entry poin
+*
+* Note: Request include token -> GuestAwareJwtDecoder, if not contain token and permiss all -> pass
+* */
 @Configuration
 @EnableWebSecurity // block all request send to app, must be through this security
 @EnableMethodSecurity(securedEnabled = true) // @PreAuthorize("ROLE_ADMIN") on controller
@@ -79,6 +99,8 @@ public class SecurityConfiguration {
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        // request include token will decode and check token expired
+                        // JWT AUTH will converter get permission
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(
                                 jwtAuthenticationConverter
                         )

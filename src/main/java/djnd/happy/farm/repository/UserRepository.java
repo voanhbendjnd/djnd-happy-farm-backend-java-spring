@@ -1,6 +1,8 @@
 package djnd.happy.farm.repository;
 
 import djnd.happy.farm.domain.User;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +20,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByActivatedIsFalseAndActivationKeyNotNullAndCreatedDateBefore(Instant createdDateBefore);
 
+
+    /*
+    * Email must be lowed case before call method
+    * */
+    @EntityGraph(attributePaths = {"authorities"})
+    @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE)
+    Optional<User> findOneWithAuthoritiesByEmail(String email);
+
+    /*
+    * Login must be lowed case before call this method
+    * */
+    @EntityGraph(attributePaths = {"authorities"})
+    @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE)
+    Optional<User> findOneWithAuthoritiesByLogin(String login);
 
 }

@@ -5,18 +5,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public final class SecurityUtils {
     private SecurityUtils() {}
-
+    public static final MacAlgorithm JWT_ALGORITHM;
     public static Optional<String> getCurrentUserLogin(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
-
+    static {
+        JWT_ALGORITHM = MacAlgorithm.HS256;
+    }
 
     private static String extractPrincipal(Authentication authentication){
         if(authentication == null){
