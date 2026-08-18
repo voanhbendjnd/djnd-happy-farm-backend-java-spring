@@ -4,6 +4,7 @@ import djnd.happy.farm.domain.User;
 import djnd.happy.farm.rest.vm.LoginVM;
 import djnd.happy.farm.rest.vm.ManagedUserVM;
 import djnd.happy.farm.security.CustomUserDetails;
+import djnd.happy.farm.security.SecurityUtils;
 import djnd.happy.farm.service.AuthService;
 import djnd.happy.farm.service.InvalidPasswordException;
 import djnd.happy.farm.service.UserService;
@@ -55,12 +56,14 @@ public class AccountResource {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             User user =userDetails.user();
             ResLoginDTO res = authService.generateResLoginDTO(user);
-            ResponseCookie cookie = ResponseCookie.from("refresh_token", "token")
+            ResponseCookie cookie = ResponseCookie.from("refresh_token",res.getRefreshToken())
                     .httpOnly(true)
                     .secure(true)
                     .path("/")
-                    .maxAge(99999)
+                    .maxAge(SecurityUtils.refreshTokenExpiration)
+                    .sameSite("Strict") // handle CSRF
                     .build();
+            res.setRefreshToken(null);
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(res);
         }
         catch(BadCredentialsException e){
