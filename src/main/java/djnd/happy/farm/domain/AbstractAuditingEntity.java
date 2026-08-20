@@ -28,7 +28,7 @@ public abstract class AbstractAuditingEntity <T> implements Serializable {
     public abstract T getId();
 
     @CreatedBy
-    @Column(name = "created_by", nullable = false, updatable = false, length = 50)
+    @Column(name = "created_by", updatable = false, length = 50)
     @JsonIgnore
     private String createdBy;
     @CreatedDate

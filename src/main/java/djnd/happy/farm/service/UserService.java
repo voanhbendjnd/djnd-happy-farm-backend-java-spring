@@ -7,7 +7,8 @@ import djnd.happy.farm.repository.AuthorityRepository;
 import djnd.happy.farm.repository.UserRepository;
 import djnd.happy.farm.security.AuthoritiesConstants;
 import djnd.happy.farm.service.dto.UserDTO;
-import io.netty.util.Constant;
+import djnd.happy.farm.service.errors.EmailAlreadyUsedException;
+import djnd.happy.farm.service.errors.LoginAlreadyUsedException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +35,7 @@ public class UserService {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
            boolean removed = this.removeNonActivatedUser(existingUser);
            if(!removed) {
-               throw new AccountAlreadyUsedException("Login name already exist!");
+               throw new LoginAlreadyUsedException();
            }
         });
         boolean isContainEmail = userDTO.getEmail() != null;
@@ -42,7 +43,7 @@ public class UserService {
             userRepository.findOneByEmail(userDTO.getEmail().toLowerCase()).ifPresent(existingUser -> {
                 boolean removed = this.removeNonActivatedUser(existingUser);
                 if(!removed) {
-                    throw new AccountAlreadyUsedException("Email already exist!");
+                    throw new EmailAlreadyUsedException();
                 }
             });
         }

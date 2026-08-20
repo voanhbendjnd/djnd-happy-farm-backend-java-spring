@@ -1,4 +1,4 @@
-package djnd.happy.farm.service;
+package djnd.happy.farm.service.errors;
 
 import djnd.happy.farm.rest.errors.BadRequestAlertException;
 import djnd.happy.farm.rest.errors.ErrorConstants;

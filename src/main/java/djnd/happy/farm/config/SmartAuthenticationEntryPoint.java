@@ -9,7 +9,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
+/*
+* This method called when request must include token (anyAuthenticated), but not found token or token expired
+* Return 401
+* */
 @Component
 public class SmartAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

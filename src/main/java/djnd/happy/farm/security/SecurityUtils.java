@@ -12,14 +12,15 @@ import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-
-public final class SecurityUtils {
+@Service
+public class SecurityUtils {
 
     public static final MacAlgorithm JWT_ALGORITHM;
     @Value("${djnd.jwt.base64-secret}")
@@ -27,7 +28,7 @@ public final class SecurityUtils {
     @Value("${djnd.jwt.access-token-validity-in-seconds}")
     private Long accessTokenExpiration;
     @Value("${djnd.jwt.refresh-token-validity-in-seconds}")
-    public static Long refreshTokenExpiration;
+    private  Long refreshTokenExpiration;
     public static Optional<String> getCurrentUserLogin(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));

@@ -14,6 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SessionManager {
     final UserRepository userRepository;
+
     public String initSessionId(Long userId){
         String newSessionId = UUID.randomUUID().toString();
         int updated = userRepository.updateSessionIdById(userId, newSessionId);
@@ -21,5 +22,10 @@ public class SessionManager {
             return newSessionId;
         }
         throw new ResourceNotFoundException("Cannot init session ID!");
+    }
+
+
+    public boolean isValidSessionId(String loginName, String sessionId){
+        return userRepository.findOneWithAuthoritiesByLogin(loginName).map(existingUser -> existingUser.getSessionId().equals(sessionId)).orElse(false);
     }
 }

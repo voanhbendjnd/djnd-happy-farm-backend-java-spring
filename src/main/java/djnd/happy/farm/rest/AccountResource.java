@@ -1,20 +1,20 @@
 package djnd.happy.farm.rest;
 
 import djnd.happy.farm.domain.User;
+import djnd.happy.farm.rest.errors.InvalidPasswordException;
 import djnd.happy.farm.rest.vm.LoginVM;
 import djnd.happy.farm.rest.vm.ManagedUserVM;
 import djnd.happy.farm.security.CustomUserDetails;
 import djnd.happy.farm.security.SecurityUtils;
 import djnd.happy.farm.service.AuthService;
-import djnd.happy.farm.service.InvalidPasswordException;
 import djnd.happy.farm.service.UserService;
 import djnd.happy.farm.service.dto.ResLoginDTO;
-import djnd.happy.farm.service.dto.UserDTO;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -24,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,13 +31,15 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AccountResource {
+    @Value("${djnd.jwt.refresh-token-validity-in-seconds}")
+    private  Long refreshTokenExpiration;
     final UserService userService;
     final AuthService authService;
     final AuthenticationManagerBuilder authenticationManagerBuilder;
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-    if(checkPasswordLength(managedUserVM.getPassword())) {
+    if(!checkPasswordLength(managedUserVM.getPassword())) {
         throw new InvalidPasswordException();
     }
     userService.registerUser(managedUserVM, managedUserVM.getPassword());
@@ -60,7 +61,7 @@ public class AccountResource {
                     .httpOnly(true)
                     .secure(true)
                     .path("/")
-                    .maxAge(SecurityUtils.refreshTokenExpiration)
+                    .maxAge(refreshTokenExpiration)
                     .sameSite("Strict") // handle CSRF
                     .build();
             res.setRefreshToken(null);

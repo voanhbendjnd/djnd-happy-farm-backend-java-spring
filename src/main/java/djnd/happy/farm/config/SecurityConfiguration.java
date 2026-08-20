@@ -64,7 +64,7 @@ public class SecurityConfiguration {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    public SecurityFilterChain filterChain(
             HttpSecurity http,
             @Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfig,
             JwtDecoder baseJwtDecoder,
@@ -83,8 +83,8 @@ public class SecurityConfiguration {
         };
         // handle for case api public but request including token wrong or expire
         List<String> publicEndpoints = List.of(
-                 "/register",
-                "login",
+                 "/api/register",
+                "/api/login",
                 "/refresh",
                 "/account/activate/**",
                 "/account/reset-password/init",
@@ -94,7 +94,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                                 .requestMatchers(whiteList).permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -133,6 +134,15 @@ public class SecurityConfiguration {
                 throw ex;
             }
         };
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter(CustomJwtAuthenticationConverter customJwtAuthenticationConverter) {
+        customJwtAuthenticationConverter.setAuthorityPrefix("");
+        customJwtAuthenticationConverter.setAuthoritiesClaimName("authorities");
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(customJwtAuthenticationConverter);
+        return jwtAuthenticationConverter;
     }
 
 }

@@ -40,13 +40,14 @@ public class User extends AbstractAuditingEntity <Long> implements Serializable 
 
     @JsonIgnore
     @NotNull
-    @Size(max = 50)
-    @Column(length = 50, unique = true, nullable = false, name = "password_hash")
+    @Size(max = 255)
+    @Column(length = 255, unique = true, nullable = false, name = "password_hash")
     private String password;
     @Size(max = 50)
     private String name;
     @Email
     @Size(min= 5,max = 254)
+
     @Column(length = 254, unique = true)
     private String email;
 
