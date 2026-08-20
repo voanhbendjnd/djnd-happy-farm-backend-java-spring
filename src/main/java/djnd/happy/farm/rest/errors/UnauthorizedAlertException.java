@@ -1,4 +1,4 @@
 package djnd.happy.farm.rest.errors;
 
-public class AnauthorizedException {
+public class UnauthorizedAlert {
 }
