@@ -9,22 +9,21 @@ import lombok.experimental.FieldDefaults;
 import java.io.Serial;
 import java.io.Serializable;
 
+@Entity
+@Table(name = "plant_likes", uniqueConstraints = {@UniqueConstraint(name = "ux_user_plant_like", columnNames = {"user_id", "plant_id"})})
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name = "plant_images")
-public class PlantImage extends AbstractAuditingEntity <Long> implements Serializable {
+public class PlantLike extends AbstractAuditingEntity<Long> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "plant_id")
+    @Column(name = "plant_id", nullable = false)
     Long plantId;
-    @Column(length = 500, name = "image_url")
-    String imageUrl;
-    @Column(name = "is_primary")// main image
-    Boolean isPrimary;
+    @Column(name = "user_id", nullable = false)
+    Long userId;
 }

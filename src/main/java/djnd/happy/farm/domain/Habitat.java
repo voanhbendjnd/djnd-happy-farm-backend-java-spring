@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,6 +20,7 @@ import java.io.Serializable;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "habitats")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Habitat  implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

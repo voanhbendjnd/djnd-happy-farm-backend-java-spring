@@ -25,7 +25,7 @@ public class PlantFertilizer extends AbstractAuditingEntity<Long> implements Ser
 
     String stage; // GROWTH -  BLOOMING - MAINTENANCE
     @Column(name = "is_primary")
-    boolean isPrimary; // true: showing short for user view moment (use for plant every year)
+    Boolean isPrimary; // true: showing short for user view moment (use for plant every year)
     @Column(name = "plant_id")
     Long plantId;
     @Column(name = "fertilizer_id")

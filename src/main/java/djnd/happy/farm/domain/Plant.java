@@ -43,14 +43,14 @@ public class Plant extends AbstractAuditingEntity<Long> implements Serializable 
     String lightRequirement;
     @Column(name = "care_level")
     String careLevel;
-    Boolean toxicated;
-
+    Boolean isToxic;
+    Boolean isCommunity;
+    String status;
     @JoinTable(name = "plant_habitat",
             joinColumns = {@JoinColumn(name = "plant_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "habitat_name", referencedColumnName = "name")}
     )
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
     Set<Habitat> habitats = new HashSet<>();
 
 
