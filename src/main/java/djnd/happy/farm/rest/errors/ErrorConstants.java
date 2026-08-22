@@ -13,5 +13,6 @@ public final class ErrorConstants {
     public static final URI NOT_FOUND = URI.create(PROBLEM_BASE_URL + "/not-found");
     public static final URI UNAUTHORIZE = URI.create(PROBLEM_BASE_URL + "/authorize");
     public static final URI INVALID_SESSION_TYPE = URI.create(PROBLEM_BASE_URL + "/invalid-session-type");
+    public static final URI BAD_REQUEST_TYPE = URI.create(PROBLEM_BASE_URL + "/bad-request");
     private ErrorConstants() {}
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -46,6 +47,9 @@ public class SecurityUtils {
         }
         else if(authentication.getPrincipal() instanceof UserDetails springSecurityUser){
             return springSecurityUser.getUsername();
+        }
+        else if(authentication.getPrincipal() instanceof Jwt jwt){
+            return jwt.getSubject();
         }
         else if(authentication.getPrincipal() instanceof String) {
             return (String)authentication.getPrincipal();
