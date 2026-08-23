@@ -3,7 +3,7 @@ package djnd.happy.farm.service;
 import djnd.happy.farm.domain.Authority;
 import djnd.happy.farm.domain.User;
 import djnd.happy.farm.repository.UserRepository;
-import djnd.happy.farm.rest.errors.ResourceNotFoundException;
+import djnd.happy.farm.web.rest.errors.ResourceNotFoundException;
 import djnd.happy.farm.security.SecurityUtils;
 import djnd.happy.farm.service.dto.ResLoginDTO;
 import lombok.AccessLevel;

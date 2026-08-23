@@ -1,11 +1,10 @@
-package djnd.happy.farm.rest;
+package djnd.happy.farm.web.rest;
 
 import djnd.happy.farm.domain.User;
-import djnd.happy.farm.rest.errors.InvalidPasswordException;
-import djnd.happy.farm.rest.vm.LoginVM;
-import djnd.happy.farm.rest.vm.ManagedUserVM;
+import djnd.happy.farm.web.rest.errors.InvalidPasswordException;
+import djnd.happy.farm.web.rest.vm.LoginVM;
+import djnd.happy.farm.web.rest.vm.ManagedUserVM;
 import djnd.happy.farm.security.CustomUserDetails;
-import djnd.happy.farm.security.SecurityUtils;
 import djnd.happy.farm.service.AuthService;
 import djnd.happy.farm.service.UserService;
 import djnd.happy.farm.service.dto.ResLoginDTO;
@@ -68,7 +67,7 @@ public class AccountResource {
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(res);
         }
         catch(BadCredentialsException e){
-            throw new djnd.happy.farm.rest.errors.BadCredentialsException();
+            throw new djnd.happy.farm.web.rest.errors.BadCredentialsException();
         }
     }
 

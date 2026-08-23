@@ -1,4 +1,4 @@
-package djnd.happy.farm.rest.errors;
+package djnd.happy.farm.web.rest.errors;
 import java.net.URI;
 
 public final class ErrorConstants {
@@ -14,5 +14,6 @@ public final class ErrorConstants {
     public static final URI UNAUTHORIZE = URI.create(PROBLEM_BASE_URL + "/authorize");
     public static final URI INVALID_SESSION_TYPE = URI.create(PROBLEM_BASE_URL + "/invalid-session-type");
     public static final URI BAD_REQUEST_TYPE = URI.create(PROBLEM_BASE_URL + "/bad-request");
+    public static final URI CONFLICT = URI.create(PROBLEM_BASE_URL + "/conflict");
     private ErrorConstants() {}
 }

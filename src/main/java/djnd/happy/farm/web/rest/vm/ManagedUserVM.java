@@ -1,4 +1,4 @@
-package djnd.happy.farm.rest.vm;
+package djnd.happy.farm.web.rest.vm;
 
 import djnd.happy.farm.service.dto.UserDTO;
 import jakarta.validation.constraints.Size;

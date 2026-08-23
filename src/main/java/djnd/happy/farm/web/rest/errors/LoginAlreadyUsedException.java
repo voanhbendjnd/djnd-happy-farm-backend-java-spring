@@ -1,4 +1,4 @@
-package djnd.happy.farm.rest.errors;
+package djnd.happy.farm.web.rest.errors;
 
 import java.io.Serial;
 

@@ -1,4 +1,4 @@
-package djnd.happy.farm.rest.errors;
+package djnd.happy.farm.web.rest.errors;
 
 import javax.annotation.Nullable;
 
@@ -62,7 +62,7 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
     }
     @ExceptionHandler
     public ResponseEntity<Problem> handleLoginAlreadyUsedException(LoginAlreadyUsedException ex, NativeWebRequest request) {
-        djnd.happy.farm.rest.errors.LoginAlreadyUsedException problem = new djnd.happy.farm.rest.errors.LoginAlreadyUsedException();
+        LoginAlreadyUsedException problem = new LoginAlreadyUsedException();
         return create(
                 problem,
                 request,

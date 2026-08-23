@@ -1,7 +1,7 @@
 package djnd.happy.farm.service.errors;
 
-import djnd.happy.farm.rest.errors.ErrorConstants;
-import djnd.happy.farm.rest.errors.UnauthorizedAlertException;
+import djnd.happy.farm.web.rest.errors.ErrorConstants;
+import djnd.happy.farm.web.rest.errors.UnauthorizedAlertException;
 
 import java.io.Serial;
 

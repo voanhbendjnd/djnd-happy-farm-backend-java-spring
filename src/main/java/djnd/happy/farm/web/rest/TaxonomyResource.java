@@ -1,7 +1,8 @@
-package djnd.happy.farm.rest;
+package djnd.happy.farm.web.rest;
 
 import com.turkraft.springfilter.boot.Filter;
 import djnd.happy.farm.repository.TaxonomyRepository;
+import djnd.happy.farm.security.AuthoritiesConstants;
 import djnd.happy.farm.service.TaxonomyService;
 import djnd.happy.farm.service.dto.GbifSpeciesResponseDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -31,6 +33,7 @@ public class TaxonomyResource {
 
     @GetMapping("/match")
     @ApiMessage("Check species name taxonomy and show data")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<GbifSpeciesResponseDTO> match(@RequestParam(name = "name", required = true) String name){
         return ResponseEntity.ok(taxonomyService.matchAndGet(name));
     }
@@ -48,6 +51,7 @@ public class TaxonomyResource {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public void createTaxonomyWithSpecies(@RequestParam(name = "name", required = true) String name){
 
         taxonomyService.createTaxonomy(name);
