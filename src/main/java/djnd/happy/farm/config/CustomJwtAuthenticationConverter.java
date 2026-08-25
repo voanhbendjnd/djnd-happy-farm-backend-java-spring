@@ -5,6 +5,7 @@ import djnd.happy.farm.service.SessionManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -38,7 +39,7 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Collecti
         if(loginName != null && sessionId != null) {
             boolean isValidSession = sessionManager.isValidSessionId(loginName, sessionId);
             if(!isValidSession) {
-                throw new SessionInvalidException();
+                throw new BadCredentialsException("Invalid session id");
             }
         }
         Collection<String> authorities = source.getClaimAsStringList(authoritiesClaimName);

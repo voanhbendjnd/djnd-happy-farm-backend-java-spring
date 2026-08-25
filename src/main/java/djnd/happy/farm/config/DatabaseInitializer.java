@@ -1,9 +1,11 @@
 package djnd.happy.farm.config;
 
 import djnd.happy.farm.domain.Authority;
+import djnd.happy.farm.domain.GrowthStage;
 import djnd.happy.farm.domain.User;
 import djnd.happy.farm.domain.enums.LoginType;
 import djnd.happy.farm.repository.AuthorityRepository;
+import djnd.happy.farm.repository.GrowthStageRepository;
 import djnd.happy.farm.repository.UserRepository;
 import djnd.happy.farm.security.AuthoritiesConstants;
 import lombok.AccessLevel;
@@ -26,6 +28,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     final UserRepository userRepository;
     final AuthorityRepository authorityRepository;
     final PasswordEncoder passwordEncoder;
+    final GrowthStageRepository growthStageRepository;
     @Override
     public void run(String... args) throws Exception {
         log.info("Database start check initialization...");

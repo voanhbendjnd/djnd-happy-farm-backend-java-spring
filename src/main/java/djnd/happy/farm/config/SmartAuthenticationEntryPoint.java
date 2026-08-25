@@ -12,6 +12,7 @@ import java.io.IOException;
 /*
 * This method called when request must include token (anyAuthenticated), but not found token or token expired
 * Return 401
+* BadCredential -> through this class
 * */
 @Component
 public class SmartAuthenticationEntryPoint implements AuthenticationEntryPoint {
