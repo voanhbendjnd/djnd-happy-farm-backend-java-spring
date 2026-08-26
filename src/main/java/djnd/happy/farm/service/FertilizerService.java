@@ -36,6 +36,7 @@ public class FertilizerService {
         Fertilizer fertilizer = new Fertilizer();
         fertilizer.setName(normalizedName);
         fertilizer.setDescription(dto.getDescription());
+        fertilizer.setDescriptionJson(dto.getDescriptionJson());
         fertilizer.setType(dto.getType());
         fertilizer.setNitrogen(dto.getNitrogen());
         fertilizer.setPhosphorus(dto.getPhosphorus());
@@ -56,6 +57,7 @@ public class FertilizerService {
         String normalizedName = dto.getName().trim();
         fertilizer.setName(normalizedName);
         fertilizer.setDescription(dto.getDescription());
+        fertilizer.setDescriptionJson(dto.getDescriptionJson());
         fertilizer.setType(dto.getType());
         fertilizer.setNitrogen(dto.getNitrogen());
         fertilizer.setPhosphorus(dto.getPhosphorus());
@@ -102,6 +104,7 @@ public class FertilizerService {
                     fertilizerDTO.setNitrogen(entity.getNitrogen());
                     fertilizerDTO.setPhosphorus(entity.getPhosphorus());
                     fertilizerDTO.setPotassium(entity.getPotassium());
+                    fertilizerDTO.setDescriptionJson(entity.getDescriptionJson());
                     fertilizerDTO.setGrowthStages(entity.getGrowthStages());
                     return fertilizerDTO;
                 }

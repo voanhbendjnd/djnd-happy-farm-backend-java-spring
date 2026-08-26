@@ -1,12 +1,15 @@
 package djnd.happy.farm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -36,6 +39,9 @@ public class Fertilizer extends AbstractAuditingEntity<Long> implements Serializ
     BigDecimal nitrogen;
     BigDecimal phosphorus;
     BigDecimal potassium;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "description_json", columnDefinition = "json")
+    JsonNode descriptionJson;
     @JsonIgnore
     @ManyToMany
             @JoinTable(

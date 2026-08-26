@@ -1,5 +1,6 @@
 package djnd.happy.farm.service.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -25,5 +26,6 @@ public class FertilizerDTO{
     BigDecimal phosphorus;
     @Min(value = 0)
     BigDecimal potassium;
+    JsonNode descriptionJson;
 
 }
