@@ -1,5 +1,6 @@
 package djnd.happy.farm.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -31,6 +32,7 @@ public class GrowthStage extends AbstractAuditingEntity<Long> implements Seriali
     String description;
 
     @ManyToMany(mappedBy = "growthStages")
+    @JsonIgnore
     Set<Fertilizer> fertilizers = new HashSet<>();
 
 }

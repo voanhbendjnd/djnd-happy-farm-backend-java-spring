@@ -5,7 +5,7 @@ import djnd.happy.farm.repository.TaxonomyRepository;
 import djnd.happy.farm.service.dto.GbifSpeciesResponseDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.dto.TaxonomyDTO;
-import djnd.happy.farm.service.errors.GlobalBadRequestException;
+import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.service.errors.SpeciesNotFoudException;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -83,10 +83,10 @@ public class TaxonomyService {
             throw new SpeciesNotFoudException();
         }
         if(!"SPECIES".equalsIgnoreCase(gbif.getRank())){
-            throw new GlobalBadRequestException("Taxon must be a species", "taxonomyManagement", "taxonnotspecies");
+            throw new BadRequestExceptionGlobal("Taxon must be a species", "taxonomyManagement", "taxonnotspecies");
         }
         if(gbif.getKingdom().equalsIgnoreCase(EXCLUDED_KINGDOM)){
-            throw new GlobalBadRequestException("Animal taxonomy is not allowed", "taxonomyManagement", "taxonnotallowed");
+            throw new BadRequestExceptionGlobal("Animal taxonomy is not allowed", "taxonomyManagement", "taxonnotallowed");
         }
         return gbif;
     }

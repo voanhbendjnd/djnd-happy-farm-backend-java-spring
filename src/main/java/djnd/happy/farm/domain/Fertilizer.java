@@ -1,5 +1,6 @@
 package djnd.happy.farm.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ public class Fertilizer extends AbstractAuditingEntity<Long> implements Serializ
     BigDecimal nitrogen;
     BigDecimal phosphorus;
     BigDecimal potassium;
+    @JsonIgnore
     @ManyToMany
             @JoinTable(
                     name = "fertilizer_growth_stage",

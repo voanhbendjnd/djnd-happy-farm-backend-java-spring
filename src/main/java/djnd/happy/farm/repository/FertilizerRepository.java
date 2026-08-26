@@ -18,6 +18,7 @@ public interface FertilizerRepository extends JpaRepository<Fertilizer,Long> , J
     @Query(value = """
 SELECT DISTINCT f.* FROM fertilizers f
 LEFT JOIN fertilizer_growth_stage fgs ON f.id = fgs.fertilizer_id
+                    left join growth_stages gs on gs.id = fgs.growth_stage_id
 WHERE 
     (:name IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')))
     AND (:type IS NULL OR LOWER(f.type) = LOWER(:type))
@@ -29,6 +30,7 @@ WHERE
             countQuery = """
 SELECT COUNT(DISTINCT f.id) FROM fertilizers f
 LEFT JOIN fertilizer_growth_stage fgs ON f.id = fgs.fertilizer_id
+                    left join growth_stages gs on gs.id = fgs.growth_stage_id
 WHERE 
     (:name IS NULL OR LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')))
     AND (:type IS NULL OR LOWER(f.type) = LOWER(:type))

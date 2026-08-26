@@ -36,7 +36,7 @@ public class HabitatResource {
     }
 
     @PatchMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void updateHabitat(@Valid @RequestBody Habitat habitat) {
         habitatService.updateHabitat(habitat);
     }
