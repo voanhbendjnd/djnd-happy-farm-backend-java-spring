@@ -1,6 +1,7 @@
 package djnd.happy.farm.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class PlantCare extends AbstractAuditingEntity<Long> implements Serializa
     @Id
             @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @NotNull
     @Column(name = "plant_id", unique = true, nullable = false)
     Long plantId;
     String watering;

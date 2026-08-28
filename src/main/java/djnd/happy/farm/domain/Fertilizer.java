@@ -29,9 +29,7 @@ public class Fertilizer extends AbstractAuditingEntity<Long> implements Serializ
     @Column(name = "name", unique = true, nullable = false)
     String name;
     String type;
-    @Column(name = "npk_ratio")
-    String npkRatio;
-    @Column(name = "description", length = 500)
+    @Column(name = "description", columnDefinition = "MEDIUMTEXT")
     String description;
     BigDecimal nitrogen;
     BigDecimal phosphorus;

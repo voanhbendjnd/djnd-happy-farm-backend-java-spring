@@ -41,6 +41,5 @@ public class PlantCareFertilizer {
     String frequency;
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
-    Boolean isPrimary;
 
 }

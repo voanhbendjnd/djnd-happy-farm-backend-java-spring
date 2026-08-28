@@ -27,7 +27,7 @@ public class Disease extends AbstractAuditingEntity<Long > implements Serializab
     String name;
     @Column(name = "description", columnDefinition = "MEDIUMTEXT")
     String description;
-    // enum
+    // enum disease severity
     String severity;
 
 

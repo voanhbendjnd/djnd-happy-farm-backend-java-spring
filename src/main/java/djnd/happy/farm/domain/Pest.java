@@ -37,6 +37,7 @@ public class Pest extends AbstractAuditingEntity<Long> implements Serializable {
                     name = "pest_symptom_intermediary",
                     joinColumns = {@JoinColumn(name = "pest_id")},
                     inverseJoinColumns = {@JoinColumn(name = "pest_symptom_id")}
+
             )
     Set<PestSymptom> pestSymptoms = new HashSet<>();
 

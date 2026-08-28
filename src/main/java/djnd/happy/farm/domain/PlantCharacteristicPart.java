@@ -22,8 +22,8 @@ public class PlantCharacteristicPart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @NotNull
-    @Column(name = "plant_characteristic_part_id", nullable = false)
-    Long plantCharacteristicPartId;
+    @Column(name = "plant_characteristic_id", nullable = false)
+    Long plantCharacteristicId;
     @NotNull
     @Column(name ="plant_part_id", nullable = false)
     Long plantPartId;

@@ -29,5 +29,6 @@ public class Propagation extends AbstractAuditingEntity<Long> implements Seriali
     String method;
     @Column(name ="description", columnDefinition = "MEDIUMTEXT")
     String description;
+    //enum propagationDifficulty
     String difficulty;
 }
