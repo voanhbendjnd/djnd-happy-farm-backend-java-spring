@@ -1,5 +1,6 @@
 package djnd.happy.farm.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -9,6 +10,8 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -28,22 +31,18 @@ public class Plant extends AbstractAuditingEntity<Long> implements Serializable 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "taxonomy_id")
+    @Column(name = "taxonomy_id", nullable = false)
     Long taxonomyId;
     @NotNull
-    @Column(name = "name", unique = true)
-    String name;
+    @Column(name = "display_name", unique = true)
+    String displayName;
     @Column(name = "scientific_name")
     String scientificName;
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
-    @Column(name = "water_requirement")
-    String waterRequirement;
-    @Column(name = "light_requirement")
-    String lightRequirement;
-    @Column(name = "care_level")
-    String careLevel;
-    Boolean isToxic;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "description_json", columnDefinition = "json")
+    JsonNode descriptionJson;
     Boolean isCommunity;
     String status;
     @JoinTable(name = "plant_habitat",

@@ -14,6 +14,6 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FertilizerGrowthStageDTO extends FertilizerDTO {
     List<Long> growthStageIds;
-    Set<GrowthStage> growthStages;
+    List<GrowthStage> growthStages;
 
 }

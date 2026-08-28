@@ -1,7 +1,9 @@
 package djnd.happy.farm.service;
 
 import djnd.happy.farm.domain.Fertilizer;
+import djnd.happy.farm.domain.FertilizerGrowthStage;
 import djnd.happy.farm.domain.GrowthStage;
+import djnd.happy.farm.repository.FertilizerGrowthStageRepository;
 import djnd.happy.farm.repository.FertilizerRepository;
 import djnd.happy.farm.repository.GrowthStageRepository;
 import djnd.happy.farm.service.dto.FertilizerDTO;
@@ -11,6 +13,7 @@ import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.FertilizerAlreadyExistsException;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.service.errors.NotFoundExceptionGlobal;
+import djnd.happy.farm.service.projection.GrowthStageProjection;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 public class FertilizerService {
     final FertilizerRepository fertilizerRepository;
     final GrowthStageRepository growthStageRepository;
+    final FertilizerGrowthStageRepository fertilizerGrowthStageRepository;
     final EntityManager entityManager;
     public void createFertilizer(FertilizerGrowthStageDTO dto) {
         String normalizedName = dto.getName().trim();
@@ -41,15 +45,23 @@ public class FertilizerService {
         fertilizer.setNitrogen(dto.getNitrogen());
         fertilizer.setPhosphorus(dto.getPhosphorus());
         fertilizer.setPotassium(dto.getPotassium());
+
+        Fertilizer newFertilizer = fertilizerRepository.save(fertilizer);
         if(dto.getGrowthStageIds() != null && !dto.getGrowthStageIds().isEmpty()) {
             long countGrowthStages =  growthStageRepository.countByIdIn(dto.getGrowthStageIds());
             if(countGrowthStages != dto.getGrowthStageIds().size()) {
                 throw new BadRequestExceptionGlobal("Growth stages not found", "growthStageManagement", "growstageidsnotfound");
             }
-            Set<GrowthStage> proxies = dto.getGrowthStageIds().stream().map(growthStageId -> entityManager.getReference(GrowthStage.class, growthStageId)).collect(Collectors.toSet());
-            fertilizer.setGrowthStages(proxies);
+            List<FertilizerGrowthStage> fgsList = new ArrayList<>();
+            for(Long  growthStageId : dto.getGrowthStageIds()) {
+                FertilizerGrowthStage fgs = new FertilizerGrowthStage();
+                fgs.setGrowthStageId(growthStageId);
+                fgs.setFertilizerId(newFertilizer.getId());
+                fgsList.add(fgs);
+            }
+            fertilizerGrowthStageRepository.saveAll(fgsList);
+
         }
-        fertilizerRepository.save(fertilizer);
     }
 
     public void updateFertilizer(FertilizerGrowthStageDTO dto) {
@@ -67,9 +79,16 @@ public class FertilizerService {
             if(countGrowthStages != dto.getGrowthStageIds().size()) {
                 throw new BadRequestExceptionGlobal("Growth stages not found", "growthStageManagement", "growstageidsnotfound");
             }
-            fertilizer.getGrowthStages().clear();
-            Set<GrowthStage> proxies = dto.getGrowthStageIds().stream().map(growthStageId -> entityManager.getReference(GrowthStage.class,growthStageId)).collect(Collectors.toSet());
-            fertilizer.getGrowthStages().addAll(proxies);
+            fertilizerGrowthStageRepository.deleteByFertilizerId(fertilizer.getId());
+            List<FertilizerGrowthStage> fgsList = new ArrayList<>();
+            for(Long  growthStageId : dto.getGrowthStageIds()) {
+                FertilizerGrowthStage fgs = new FertilizerGrowthStage();
+                fgs.setGrowthStageId(growthStageId);
+                fgs.setFertilizerId(fertilizer.getId());
+                fgsList.add(fgs);
+            }
+            fertilizerGrowthStageRepository.saveAll(fgsList);
+
         }
         fertilizerRepository.save(fertilizer);
 
@@ -94,6 +113,11 @@ public class FertilizerService {
         meta.setPages(page.getTotalPages());
         meta.setTotal(page.getTotalElements());
         res.setMeta(meta);
+        List<Long> fertilizerIds = page.getContent().stream().map(Fertilizer::getId).toList();
+        List<GrowthStageProjection> stages = fertilizerGrowthStageRepository.findByGrowthStageIdIn(fertilizerIds);
+
+        Map<Long, List<GrowthStageProjection>> stageMap = stages.stream().collect(Collectors.groupingBy(GrowthStageProjection::getFertilizerId));
+
         res.setResult(page.getContent().stream().map(
                 entity ->{
                     FertilizerGrowthStageDTO fertilizerDTO = new FertilizerGrowthStageDTO();
@@ -105,7 +129,9 @@ public class FertilizerService {
                     fertilizerDTO.setPhosphorus(entity.getPhosphorus());
                     fertilizerDTO.setPotassium(entity.getPotassium());
                     fertilizerDTO.setDescriptionJson(entity.getDescriptionJson());
-                    fertilizerDTO.setGrowthStages(entity.getGrowthStages());
+                    List<GrowthStageProjection> projectionList = stageMap.getOrDefault(entity.getId(), Collections.emptyList());
+                    List<GrowthStage> growthStages = projectionList.stream().map(GrowthStageProjection::getGrowthStage).collect(Collectors.toList());
+                    fertilizerDTO.setGrowthStages(growthStages);
                     return fertilizerDTO;
                 }
         ).collect(Collectors.toList())

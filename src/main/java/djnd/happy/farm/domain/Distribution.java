@@ -14,20 +14,13 @@ import java.io.Serializable;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "plant_images")
-public class PlantImage extends AbstractAuditingEntity <Long> implements Serializable {
+@Table(name = "distributions")
+public class Distribution extends AbstractAuditingEntity<Long> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @NotNull
-    @Column(name = "plant_id", nullable = false)
-    Long plantId;
-    @NotNull
-    @Column(length = 500, name = "image_url", nullable = false)
-    String imageUrl;
-    @Column(name = "is_primary")// main image
-    Boolean isPrimary;
+    String countryCode;
+    String region;
 }

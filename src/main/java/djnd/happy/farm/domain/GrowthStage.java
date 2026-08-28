@@ -1,8 +1,6 @@
 package djnd.happy.farm.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +8,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "growth_stages")
@@ -23,16 +19,12 @@ public class GrowthStage extends AbstractAuditingEntity<Long> implements Seriali
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @Column(name = "code", unique = true,  nullable = false)
     String code;
     String name;
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
-
-    @ManyToMany(mappedBy = "growthStages")
-    @JsonIgnore
-    Set<Fertilizer> fertilizers = new HashSet<>();
 
 }
