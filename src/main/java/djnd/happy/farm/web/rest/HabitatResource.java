@@ -3,6 +3,7 @@ package djnd.happy.farm.web.rest;
 import djnd.happy.farm.domain.Habitat;
 import djnd.happy.farm.security.AuthoritiesConstants;
 import djnd.happy.farm.service.HabitatService;
+import djnd.happy.farm.service.dto.HabitatDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.util.annotation.ApiMessage;
 import jakarta.validation.Valid;
@@ -24,8 +25,8 @@ public class HabitatResource {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public void createHabitat(@Valid @RequestBody Habitat habitat) {
-        habitatService.createHabitat(habitat);
+    public void createHabitat(@Valid @RequestBody HabitatDTO habitatDTO) {
+        habitatService.createHabitat(habitatDTO);
     }
 
 
@@ -37,7 +38,7 @@ public class HabitatResource {
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateHabitat(@Valid @RequestBody Habitat habitat) {
-        habitatService.updateHabitat(habitat);
+    public void updateHabitat(@Valid @RequestBody HabitatDTO habitatDTO) {
+        habitatService.updateHabitat(habitatDTO);
     }
 }

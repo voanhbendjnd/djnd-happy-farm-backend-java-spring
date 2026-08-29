@@ -6,15 +6,14 @@ import djnd.happy.farm.domain.GrowthStage;
 import djnd.happy.farm.repository.FertilizerGrowthStageRepository;
 import djnd.happy.farm.repository.FertilizerRepository;
 import djnd.happy.farm.repository.GrowthStageRepository;
-import djnd.happy.farm.service.dto.FertilizerDTO;
 import djnd.happy.farm.service.dto.FertilizerGrowthStageDTO;
 import djnd.happy.farm.service.dto.FertilizerSearchCriteriaDTO;
+import djnd.happy.farm.service.dto.GrowthStageDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.FertilizerAlreadyExistsException;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
-import djnd.happy.farm.service.errors.NotFoundExceptionGlobal;
+import djnd.happy.farm.service.errors.DataResourceNotFoundException;
 import djnd.happy.farm.service.projection.GrowthStageProjection;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,6 @@ public class FertilizerService {
     final FertilizerRepository fertilizerRepository;
     final GrowthStageRepository growthStageRepository;
     final FertilizerGrowthStageRepository fertilizerGrowthStageRepository;
-    final EntityManager entityManager;
     public void createFertilizer(FertilizerGrowthStageDTO dto) {
         String normalizedName = dto.getName().trim();
         if(fertilizerRepository.existsByNameIgnoreCase(normalizedName)) {
@@ -65,7 +63,7 @@ public class FertilizerService {
     }
 
     public void updateFertilizer(FertilizerGrowthStageDTO dto) {
-        Fertilizer fertilizer = fertilizerRepository.findById(dto.getId()).orElseThrow(()-> new  NotFoundExceptionGlobal("Fertilizer with ID " + dto.getId() + " not found", "fertilizerManagement", "notfoudid"));
+        Fertilizer fertilizer = fertilizerRepository.findById(dto.getId()).orElseThrow(()-> new DataResourceNotFoundException("Fertilizer with ID " + dto.getId() + " not found", "fertilizerManagement", "notfoudid"));
         String normalizedName = dto.getName().trim();
         fertilizer.setName(normalizedName);
         fertilizer.setDescription(dto.getDescription());
@@ -130,7 +128,15 @@ public class FertilizerService {
                     fertilizerDTO.setPotassium(entity.getPotassium());
                     fertilizerDTO.setDescriptionJson(entity.getDescriptionJson());
                     List<GrowthStageProjection> projectionList = stageMap.getOrDefault(entity.getId(), Collections.emptyList());
-                    List<GrowthStage> growthStages = projectionList.stream().map(GrowthStageProjection::getGrowthStage).collect(Collectors.toList());
+                    List<GrowthStageDTO> growthStages = projectionList.stream().map(projection -> {
+                        GrowthStageDTO growthStageDTO = new GrowthStageDTO();
+                        GrowthStage proGrowthStage = projection.getGrowthStage();
+                        growthStageDTO.setId(proGrowthStage.getId());
+                        growthStageDTO.setName(proGrowthStage.getName());
+//                        growthStageDTO.setDescription(proGrowthStage.getDescription());
+                        growthStageDTO.setCode(proGrowthStage.getCode());
+                        return growthStageDTO;
+                    }).collect(Collectors.toList());
                     fertilizerDTO.setGrowthStages(growthStages);
                     return fertilizerDTO;
                 }

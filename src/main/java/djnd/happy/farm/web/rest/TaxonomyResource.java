@@ -53,7 +53,6 @@ public class TaxonomyResource {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public void createTaxonomyWithSpecies(@RequestParam(name = "name", required = true) String name){
-
         taxonomyService.createTaxonomy(name);
     }
 }

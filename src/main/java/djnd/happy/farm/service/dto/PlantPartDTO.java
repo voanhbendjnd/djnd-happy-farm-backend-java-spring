@@ -1,17 +1,17 @@
 package djnd.happy.farm.service.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
-
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FertilizerGrowthStageDTO extends FertilizerDTO {
-    List<Long> growthStageIds;
-    List<GrowthStageDTO> growthStages;
-
+public class PlantPartDTO {
+    Long id;
+    @NotNull(message = "name plant part not found")
+    String name;
+    String description;
 }

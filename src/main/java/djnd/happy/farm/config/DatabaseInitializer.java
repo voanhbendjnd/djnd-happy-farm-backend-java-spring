@@ -28,7 +28,6 @@ public class DatabaseInitializer implements CommandLineRunner {
     final UserRepository userRepository;
     final AuthorityRepository authorityRepository;
     final PasswordEncoder passwordEncoder;
-    final GrowthStageRepository growthStageRepository;
     @Override
     public void run(String... args) throws Exception {
         log.info("Database start check initialization...");

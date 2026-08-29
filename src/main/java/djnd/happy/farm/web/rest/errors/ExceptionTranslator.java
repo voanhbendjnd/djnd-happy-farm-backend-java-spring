@@ -4,8 +4,11 @@ import javax.annotation.Nullable;
 
 import djnd.happy.farm.service.errors.EmailAlreadyUsedException;
 import djnd.happy.farm.service.errors.SessionInvalidException;
+import djnd.happy.farm.util.RestResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -16,6 +19,10 @@ import org.zalando.problem.spring.web.advice.ProblemHandling;
 import org.zalando.problem.spring.web.advice.security.SecurityAdviceTrait;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import tech.jhipster.web.util.HeaderUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait {
     private static final String FIELD_ERRORS_KEY = "fieldErrors";
@@ -88,6 +95,5 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
                 HeaderUtil.createFailureAlert(applicationName, false, problem.getEntityName(), problem.getErrorKey(), problem.getMessage())
         );
     }
-
 
 }

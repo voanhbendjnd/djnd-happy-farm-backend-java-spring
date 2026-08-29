@@ -28,6 +28,6 @@ public class ToxicitySymptom extends AbstractAuditingEntity<Long> implements Ser
     String name;
     @Column(name = "description", columnDefinition = "MEDIUMTEXT")
     String description;
-    @ManyToMany(mappedBy = "plantToxicitySymptoms")
+    @ManyToMany(mappedBy = "toxicitySymptoms")
     Set<PlantToxicity> plantToxicities = new HashSet<>();
 }

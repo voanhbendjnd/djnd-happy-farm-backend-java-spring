@@ -2,6 +2,7 @@ package djnd.happy.farm.service;
 
 import djnd.happy.farm.domain.Habitat;
 import djnd.happy.farm.repository.HabitatRepository;
+import djnd.happy.farm.service.dto.HabitatDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.HabitatAlreadyExistsException;
 import djnd.happy.farm.service.errors.HabitatNotFoundException;
@@ -25,17 +26,22 @@ import java.util.Locale;
 public class HabitatService {
     final HabitatRepository habitatRepository;
 
-    public void createHabitat(Habitat request) {
-
-        if(habitatRepository.existByName(request.getName().trim().toLowerCase(Locale.ENGLISH))) {
-            throw new HabitatAlreadyExistsException("Habitat with name " + request.getName() + " already in use", "habitatManagement", "conflictname");
+    public void createHabitat(HabitatDTO dto) {
+    String normalizedName = dto.getName().trim();
+        if(habitatRepository.existByName(normalizedName.toLowerCase(Locale.ENGLISH))) {
+            throw new HabitatAlreadyExistsException("Habitat with name " + normalizedName + " already in use", "habitatManagement", "conflictname");
         }
-        habitatRepository.save(request);
+        Habitat habitat = new Habitat();
+        habitat.setName(normalizedName);
+        habitat.setDescription(dto.getDescription());
+
+        habitatRepository.save(habitat);
     }
 
-    public void updateHabitat(Habitat request) {
-        Habitat habitatExisting = habitatRepository.findByNameIgnoreCase(request.getName().trim()).orElseThrow(() -> new HabitatNotFoundException("Habitat name " + request.getName() + " not found", "habitatManagement", "notfoundname"));
-        habitatExisting.setDescription(request.getDescription());
+    public void updateHabitat(HabitatDTO dto) {
+        String normalizedName = dto.getName().trim();
+        Habitat habitatExisting = habitatRepository.findByNameIgnoreCase(normalizedName).orElseThrow(() -> new HabitatNotFoundException("Habitat name " + normalizedName + " not found", "habitatManagement", "notfoundname"));
+        habitatExisting.setDescription(dto.getDescription());
         habitatRepository.save(habitatExisting);
     }
     @Transactional(readOnly = true)
