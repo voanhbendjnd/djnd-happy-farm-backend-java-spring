@@ -4,7 +4,7 @@ import djnd.happy.farm.domain.PlantPart;
 import djnd.happy.farm.repository.PlantPartRepository;
 import djnd.happy.farm.service.dto.PlantPartDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
-import djnd.happy.farm.service.errors.ConflictDataFromServerException;
+import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PlantPartService {
     public void createPlantPart(PlantPartDTO plantPartDTO) {
         String normalizedName = plantPartDTO.getName().trim();
         if(plantPartRepository.checkByName(normalizedName.toLowerCase())) {
-            throw new ConflictDataFromServerException("Plant part with name " + normalizedName + " already exists", "plantPartManagement", "namealreadyexists");
+            throw new DataConflictException("Plant part with name " + normalizedName + " already exists", "plantPartManagement", "namealreadyexists");
         }
         PlantPart plantPart = new PlantPart();
         plantPart.setName(normalizedName);
@@ -37,7 +37,7 @@ public class PlantPartService {
         PlantPart plantPart = plantPartRepository.findById(plantPartDTO.getId()).orElseThrow(() -> new DataResourceNotFoundException("Plant part with ID " + plantPartDTO.getId() + " not found", "plantPartManagement", "idnotfound"));
         String normalizedName = plantPartDTO.getName().trim();
         if(plantPartRepository.checkByNameAndIdNot(normalizedName.toLowerCase(), plantPartDTO.getId())) {
-            throw new ConflictDataFromServerException("Plant part with name " + normalizedName + " already exists", "plantPartManagement", "namealreadyexists");
+            throw new DataConflictException("Plant part with name " + normalizedName + " already exists", "plantPartManagement", "namealreadyexists");
         }
         plantPart.setName(normalizedName);
         plantPart.setDescription(plantPartDTO.getDescription());
