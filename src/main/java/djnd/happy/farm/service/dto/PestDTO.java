@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Setter
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -14,4 +17,5 @@ public class PestDTO {
     @NotBlank(message = "Pest name not found")
     String name;
     String description;
+    Set<PestSymptomDTO> pestSymptoms = new HashSet<>();
 }
