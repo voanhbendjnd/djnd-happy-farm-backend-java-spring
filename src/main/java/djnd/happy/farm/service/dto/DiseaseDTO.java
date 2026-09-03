@@ -6,18 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-@Setter
 @Getter
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PestDTO {
+public class DiseaseDTO {
     Long id;
-    @NotBlank(message = "Pest name not found")
+    @NotBlank(message = "Disease name cannot be empty")
     String name;
     String description;
-    List<PestSymptomDTO> pestSymptoms = new ArrayList<>();
+    String severity;
 }

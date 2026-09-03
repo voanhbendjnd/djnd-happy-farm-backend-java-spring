@@ -10,6 +10,7 @@ import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
+import djnd.happy.farm.service.projection.PestSymptomProjection;
 import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -83,11 +84,25 @@ public class PestService {
         meta.setTotal(page.getTotalElements());
         meta.setPages(page.getTotalPages());
         res.setMeta(meta);
+        List<PestSymptomProjection> pestIdsPestSymptoms = pestSymptomRepository.fetchWithPestIds(page.getContent().stream().map(Pest::getId).toList());
+        Map<Long, List<PestSymptomProjection>> mapPestSymptom = pestIdsPestSymptoms.stream().collect(Collectors.groupingBy(PestSymptomProjection::getPestId));
         res.setResult(page.getContent().stream().map(pest ->{
             PestDTO pestDTO = new PestDTO();
             pestDTO.setId(pest.getId());
             pestDTO.setName(pest.getName());
             pestDTO.setDescription(pest.getDescription());
+            List<PestSymptomProjection> projectionList = mapPestSymptom.getOrDefault(pest.getId(), Collections.emptyList());
+            List<PestSymptomDTO> pestSymptoms= projectionList.stream().map(
+                    psProjection ->{
+                        PestSymptomDTO pestSymptomDTO = new PestSymptomDTO();
+                        pestSymptomDTO.setId(psProjection.getId());
+                        pestSymptomDTO.setName(psProjection.getName());
+                        return pestSymptomDTO;
+                    }
+
+            ).toList();
+            pestDTO.setPestSymptoms(pestSymptoms);
+
             return pestDTO;
         }).toList());
         return res;
