@@ -24,7 +24,7 @@ public class DiseaseResource {
         try{
             DiseaseSeverity.valueOf(severity);
         }catch(Exception e){
-            throw new BadRequestExceptionGlobal("Severity Disease with name "+ severity + "invalid","diseaseManagement", "invalidformat");
+            throw new BadRequestExceptionGlobal("Severity Disease with name "+ severity + " invalid","diseaseManagement", "invalidformat");
         }
     }
     @PostMapping
@@ -48,7 +48,7 @@ public class DiseaseResource {
         checkSeverityValid(dto.getSeverity());
         diseaseService.updateDisease(dto);
     }
-
+    @GetMapping
     public ResponseEntity<ResultPaginationDTO> fetchAll(@RequestParam(name = "q", required = false) String q, @RequestParam(name = "severity", required = false)String severity, Pageable pageable){
         String normalizedSeverity = "";
         if(severity != null && !severity.isEmpty()){

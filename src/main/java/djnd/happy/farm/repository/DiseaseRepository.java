@@ -16,7 +16,9 @@ public interface DiseaseRepository extends JpaRepository<Disease, Long> {
     boolean checkByNameIgnoreCaseAndIdNot(@Param("normalizedName") String name, @Param("id") Long id);
 
 
-    @Query(value ="select d from Disease d where lower(d.name) like concat('%',:name,'%') and d.severity = :severity",
-    countQuery = "select count(d) from Disease d where lower(d.name) like concat('%',:name,'%') and d.severity = :severity")
+    @Query(value = "select d from Disease d where lower(d.name) like concat('%',:name,'%') " +
+            "and (:severity = '' or d.severity = :severity)",
+            countQuery = "select count(d) from Disease d where lower(d.name) like concat('%',:name,'%') " +
+                    "and (:severity is null or :severity = '' or d.severity = :severity)")
     Page<Disease> fetchAllWithQuery(@Param("name") String name, @Param("severity") String severity, Pageable pageable);
 }

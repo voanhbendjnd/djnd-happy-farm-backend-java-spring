@@ -9,7 +9,6 @@ import djnd.happy.farm.service.errors.DataResourceNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class DiseaseService {
         if(q != null && !q.isEmpty()){
             normalizedName += q;
         }
-        Page<Disease> page = diseaseRepository.fetchAllWithQuery(q, severity, pageable);
+        Page<Disease> page = diseaseRepository.fetchAllWithQuery(normalizedName, severity, pageable);
         ResultPaginationDTO res = new ResultPaginationDTO();
         var meta = new ResultPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);
