@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DiseaseRepository extends JpaRepository<Disease, Long> {
     @Query(value = "select exists(select 1 from Disease d where lower(d.name) = :normalizedName)")
@@ -21,4 +23,6 @@ public interface DiseaseRepository extends JpaRepository<Disease, Long> {
             countQuery = "select count(d) from Disease d where lower(d.name) like concat('%',:name,'%') " +
                     "and (:severity is null or :severity = '' or d.severity = :severity)")
     Page<Disease> fetchAllWithQuery(@Param("name") String name, @Param("severity") String severity, Pageable pageable);
+    @Query(value = "select d from Disease d where d.id in :diseaseIds")
+    List<Disease> findAllById(@Param("diseaseIds") Long diseaseIds);
 }

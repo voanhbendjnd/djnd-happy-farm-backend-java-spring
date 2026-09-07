@@ -18,4 +18,6 @@ public interface PestRepository extends JpaRepository<Pest, Long> {
 
     @Query(value = "select p from Pest p where lower(p.name) like concat('%',:name,'%')", countQuery = "select count(p) from Pest p where lower(p.name) like concat('%',:name,'%')")
     Page<Pest> fetchAllWithQuery(@Param("name") String name, Pageable pageable);
+
+
 }
