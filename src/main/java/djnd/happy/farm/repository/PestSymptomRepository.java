@@ -39,5 +39,7 @@ public interface PestSymptomRepository extends JpaRepository<PestSymptom, Long> 
     List<PestSymptomProjection> fetchWithPestIds(
             @Param("pestIds") List<Long> pestIds
     );
+    @Query(value = "select ps.id as id, ps.name as name from PestSymptom ps where lower(ps.name) like concat('%',:name,'%')", countQuery = "select count(ps) from PestSymptom ps where lower(ps.name) like concat('%',:name,'%')")
+    Page<PestSymptomProjection> findLikeName(@Param("name") String name, Pageable pageable);
 
 }

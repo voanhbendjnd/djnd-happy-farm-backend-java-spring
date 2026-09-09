@@ -4,6 +4,7 @@ import djnd.happy.farm.service.PestSymptomService;
 import djnd.happy.farm.service.dto.PestSymptomDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
+import djnd.happy.farm.service.projection.PestSymptomProjection;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RestController
@@ -41,5 +44,9 @@ public class PestSymptomResource {
     @GetMapping
     public ResponseEntity<ResultPaginationDTO> fetchAllWithQuery(@RequestParam(name = "q", required = false) String q, Pageable pageable){
         return ResponseEntity.ok(pestSymptomService.fetchAllWithPagination(q, pageable));
+    }
+    @GetMapping("/name")
+    public ResponseEntity<ResultPaginationDTO> fetchLikeName(@RequestParam(name = "name", required = false) String name, Pageable pageable){
+        return ResponseEntity.ok(pestSymptomService.fetchWithName(name, pageable));
     }
 }

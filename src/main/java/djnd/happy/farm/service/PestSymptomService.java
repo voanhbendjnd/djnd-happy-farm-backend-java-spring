@@ -6,6 +6,7 @@ import djnd.happy.farm.service.dto.PestSymptomDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
+import djnd.happy.farm.service.projection.PestSymptomProjection;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -65,6 +67,24 @@ public class PestSymptomService {
         }).toList());
         return res;
     }
+    public ResultPaginationDTO fetchWithName(String name, Pageable pageable) {
+        String normalizedName = null;
+        if(name != null && !name.isEmpty()) {
+            normalizedName = name.trim().toLowerCase(Locale.ENGLISH);
+        }
+
+        Page<PestSymptomProjection> page = pestSymptomRepository.findLikeName(normalizedName, pageable);
+        ResultPaginationDTO res = new ResultPaginationDTO();
+        var meta = new ResultPaginationDTO.Meta();
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+        meta.setPages(page.getTotalPages());
+        meta.setTotal(page.getTotalElements());
+        res.setMeta(meta);
+        res.setResult(page.getContent());
+        return res;
+    }
+
 
 
 }
