@@ -1,6 +1,7 @@
 package djnd.happy.farm.repository;
 
 import djnd.happy.farm.domain.Disease;
+import djnd.happy.farm.service.projection.DiseaseProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,11 @@ public interface DiseaseRepository extends JpaRepository<Disease, Long> {
     Page<Disease> fetchAllWithQuery(@Param("name") String name, @Param("severity") String severity, Pageable pageable);
     @Query(value = "select d from Disease d where d.id in :diseaseIds")
     List<Disease> findAllById(@Param("diseaseIds") Long diseaseIds);
+
+
+
+    @Query(value = "select d.id as id, d.name as name from Disease d where lower(d.name) like concat('%',:name,'%')", countQuery = "select count(d) from Disease d where lower(d.name) like concat('%',:name,'%')")
+    Page<DiseaseProjection> fetchLikeName(@Param("name") String name, Pageable pageable);
+
+
 }

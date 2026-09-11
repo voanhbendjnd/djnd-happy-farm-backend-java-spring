@@ -6,12 +6,15 @@ import djnd.happy.farm.service.dto.DiseaseDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
+import djnd.happy.farm.service.projection.DiseaseProjection;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +69,24 @@ public class DiseaseService {
                         }).toList()
 
                 );
+        return res;
+    }
+
+
+    public ResultPaginationDTO fetchLikeName(String name, Pageable pageable){
+        String normalizedName = null;
+        if(name != null && !name.isEmpty()){
+            normalizedName = name.trim().toLowerCase(Locale.ENGLISH);
+        }
+        Page<DiseaseProjection> page= diseaseRepository.fetchLikeName(normalizedName, pageable);
+        var res = new ResultPaginationDTO();
+        var meta = new ResultPaginationDTO.Meta();
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+        meta.setPages(page.getTotalPages());
+        meta.setTotal(page.getTotalElements());
+        res.setMeta(meta);
+        res.setResult(page.getContent());
         return res;
     }
 }

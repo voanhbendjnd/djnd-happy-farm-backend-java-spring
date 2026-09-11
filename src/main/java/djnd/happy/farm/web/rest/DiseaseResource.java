@@ -58,4 +58,8 @@ public class DiseaseResource {
         return ResponseEntity.ok(diseaseService.fetchAll(q, normalizedSeverity, pageable));
 
     }
+    @GetMapping("/name")
+    public ResponseEntity<ResultPaginationDTO> fetchLikeName(@RequestParam(name = "name", required = false) String name, Pageable pageable){
+        return ResponseEntity.ok(diseaseService.fetchLikeName(name, pageable));
+    }
 }
