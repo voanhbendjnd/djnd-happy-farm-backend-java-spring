@@ -1,8 +1,6 @@
 package djnd.happy.farm.web.rest;
 
-import djnd.happy.farm.domain.Propagation;
 import djnd.happy.farm.domain.enums.PropagationDifficulty;
-import djnd.happy.farm.domain.enums.PropagationMethod;
 import djnd.happy.farm.service.PropagationService;
 import djnd.happy.farm.service.dto.PropagationDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;

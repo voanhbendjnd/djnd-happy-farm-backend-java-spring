@@ -56,8 +56,8 @@ public class PropagationService {
     public ResultPaginationDTO fetchAllWithMethod(String method, String difficulty, Pageable pageable) {
         Specification<Propagation> ps =(root, query, cb) ->{
             List<Predicate> predicates = new ArrayList<>();
-            if(method != null){
-                predicates.add(cb.equal(root.get("method"), method));
+            if(method != null && !method.isEmpty()){
+                predicates.add(cb.like(cb.lower(root.get("method")), "%" + method.toLowerCase(Locale.ENGLISH) + "%"));
             }
             if(difficulty != null){
                 predicates.add(cb.equal(root.get("difficulty"), difficulty));
