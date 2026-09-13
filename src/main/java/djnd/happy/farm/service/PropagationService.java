@@ -82,6 +82,8 @@ public class PropagationService {
                 }
 
         ).toList());
+
+
         return res;
     }
 }
