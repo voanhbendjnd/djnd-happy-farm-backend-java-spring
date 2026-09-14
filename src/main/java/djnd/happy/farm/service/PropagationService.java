@@ -6,7 +6,6 @@ import djnd.happy.farm.service.dto.PropagationDTO;
 import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ import java.util.Locale;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class PropagationService {
-    private PropagationRepository propagationRepository;
+    final PropagationRepository propagationRepository;
 
     public void create(PropagationDTO dto) {
         String normalizedMethod = dto.getMethod().trim();
