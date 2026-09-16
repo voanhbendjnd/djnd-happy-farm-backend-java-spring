@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -18,4 +20,5 @@ public class PlantDTO {
     String scientificName;
     Boolean isCommunity;
     String status;
+    List<PlantImageDTO> images;
 }
