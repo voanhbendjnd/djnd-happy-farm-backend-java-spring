@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -95,7 +94,15 @@ public class PlantService {
         currentPlant.setDescription(plantDTO.getDescription());
         currentPlant.setStatus(plantDTO.getStatus());
         currentPlant.setDescriptionJson(plantDTO.getDescriptionJson());
+        List<PlantImageDTO> newImages = plantDTO.getImages();
+        if(newImages != null && !newImages.isEmpty()) {
+            List<PlantImage> currentImages = plantImageRepository.findByPlantId(currentPlant.getId());
+
+        }
+
+        if(plantDTO.getImages() != null && !plantDTO.getImages().isEmpty()) {}
         plantRepository.save(currentPlant);
+
     }
 
 

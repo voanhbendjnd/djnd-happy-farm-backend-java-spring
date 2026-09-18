@@ -112,20 +112,19 @@ public class FileService {
         return fileName;
     }
 
-    public String moveFileToSave(String fileName, String to) throws URISyntaxException,IOException {
-        var tempPath  = Paths.get(absolutePathURLServer + fileName);
+    public String moveFileToSave(String fileName, String to) throws URISyntaxException, IOException {
+        var tempPath = Paths.get(absolutePathURLServer + FileService.SAVE_TO_TEMP + "/" + fileName);
         var saveAt = Paths.get(absolutePathURLServer + to);
         Files.createDirectories(saveAt);
         var finalPath = saveAt.resolve(fileName);
-        if(Files.exists(finalPath)) {
+        if (Files.exists(tempPath)) {
             Files.move(tempPath, finalPath, StandardCopyOption.REPLACE_EXISTING);
-            return Paths.get(to).resolve(finalPath).toString().replace("\\", "/");
+            return to + "/" + fileName;
         }
-        else{
-            return null;
-        }
-
+        return null;
     }
+
+
     public List<String> moveFilesToSave(List<String> fileNames, String to)throws URISyntaxException,IOException{
         var saveAt = Paths.get(absolutePathURLServer + to);
         Files.createDirectories(saveAt);

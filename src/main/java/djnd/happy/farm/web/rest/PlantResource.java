@@ -5,10 +5,10 @@ import djnd.happy.farm.service.PlantService;
 import djnd.happy.farm.service.dto.PlantDTO;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.util.annotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,5 +49,12 @@ public class PlantResource {
             isValidFileImages(files);
             return ResponseEntity.status(HttpStatus.CREATED).body(fileService.saveAndGetFilesURL(files));
     }
-
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createNewPlantByAdmin(@Valid @RequestBody PlantDTO plantDTO) throws URISyntaxException, IOException {
+        if(plantDTO.getId() != null){
+            throw new BadRequestExceptionGlobal("A new plant already cannot have an ID", "plantManagement", "bodyincludeid");
+        }
+        plantService.createNewPlantByAdmin(plantDTO);
+    }
 }
