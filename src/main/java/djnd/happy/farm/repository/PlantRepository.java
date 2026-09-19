@@ -10,9 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlantRepository extends JpaRepository<Plant, Long>, JpaSpecificationExecutor<Plant> {
     @Query(value = "select exists(select 1 from Plant p where lower(p.displayName) = :displayName)")
-    boolean existsByNameIgnoreCase(@Param("displayName") String displayName);
-
+    boolean existsByDisplayNameIgnoreCase(@Param("displayName") String displayName);
+    @Query(value = "select exists(select 1 from Plant p where lower(p.scientificName) = :scientficName)")
+    boolean existsByScientificNameIgnoreCase(@Param("scientificName") String scientificName);
 
     @Query(value = "select exists(select 1 from Plant p where lower(p.displayName) = :displayName and p.id <> :id)")
-    boolean existsByNameIgnoreCaseAndIdNot(@Param("displayName") String displayName, @Param("id") Long id);
+    boolean existsByDisplayNameIgnoreCaseAndIdNot(@Param("displayName") String displayName, @Param("id") Long id);
+    @Query(value = "select exists(select 1 from Plant p where lower(p.scientificName) = :scientificName and p.id <> :id)")
+    boolean existsByScientificNameIgnoreCaseAndIdNot(@Param("scientificName") String scientificName, @Param("id") Long id);
 }

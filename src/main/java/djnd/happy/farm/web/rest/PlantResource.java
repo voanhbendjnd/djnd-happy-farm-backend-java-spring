@@ -1,5 +1,6 @@
 package djnd.happy.farm.web.rest;
 
+import djnd.happy.farm.domain.enums.PlantStatus;
 import djnd.happy.farm.service.FileService;
 import djnd.happy.farm.service.PlantService;
 import djnd.happy.farm.service.dto.PlantDTO;
@@ -26,27 +27,18 @@ import java.util.List;
 public class PlantResource {
     final PlantService plantService;
     final FileService fileService;
-    private void isValidFileImages(List<MultipartFile> files) {
-        List<String> filesAllowed = List.of(".jpg", ".jpeg", ".png", ".webp");
-        List<String> errorMessages = new ArrayList<>();
-        files.forEach(file -> {
-            if(!filesAllowed.contains(file.getOriginalFilename())) {
-                errorMessages.add(file.getOriginalFilename() + " type is not allowed");
-            }
-        });
-        if(!errorMessages.isEmpty()) {
-            throw new BadRequestExceptionGlobal(
-                    String.join("/n", errorMessages),
-                    "fileManagement",
-                    "typefileinvlaid"
-            );
+    private void isValidStatus(String status){
+        try{
+            PlantStatus.valueOf(status);
         }
-
+        catch(Exception e){
+            throw new BadRequestExceptionGlobal("Status " + status + " invalid format", "plantManagement", "statusinvalidformat");
+        }
     }
     @PostMapping("/save/images-to-temp")
     @ApiMessage("Save and get image url files to temp")
     public ResponseEntity<List<String>> savePlantImageToTemp(@RequestPart("files") List<MultipartFile> files) throws URISyntaxException, IOException {
-            isValidFileImages(files);
+            FileService.isValidFileImages(files);
             return ResponseEntity.status(HttpStatus.CREATED).body(fileService.saveAndGetFilesURL(files));
     }
     @PostMapping
@@ -55,6 +47,7 @@ public class PlantResource {
         if(plantDTO.getId() != null){
             throw new BadRequestExceptionGlobal("A new plant already cannot have an ID", "plantManagement", "bodyincludeid");
         }
+        isValidStatus(plantDTO.getStatus());
         plantService.createNewPlantByAdmin(plantDTO);
     }
 }

@@ -20,7 +20,9 @@ public class PlantDTO {
     String description;
     JsonNode descriptionJson;
     String scientificName;
+    @NotBlank(message = "This plant cannot define community or not")
     Boolean isCommunity;
+    @NotBlank(message = "Plant status not found")
     String status;
     List<PlantImageDTO> images;
 }

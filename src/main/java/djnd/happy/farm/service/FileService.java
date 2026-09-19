@@ -47,7 +47,7 @@ public class FileService {
         return SAVE_IMAGE_PLANT + "/" + fileName;
     }
     public List<String> saveAndGetFilesURL(List<MultipartFile> files) throws URISyntaxException, IOException {
-        if(files == null && files.isEmpty()){
+        if(files == null || files.isEmpty()){
             throw new BadRequestExceptionGlobal("File not found", "fileManagement", "filenotfound");
         }
         List<String> errorMessages = new ArrayList<>();
@@ -168,5 +168,26 @@ public class FileService {
         } catch (IOException e) {
             System.err.println("Error listing " + SAVE_IMAGE_PLANT + " directory.");
         }
+    }
+
+    public static void isValidFileImages(List<MultipartFile> files) {
+        List<String> filesAllowed = List.of(".jpg", ".jpeg", ".png", ".webp");
+        List<String> errorMessages = new ArrayList<>();
+
+        files.forEach(file -> {
+            String fileName = file.getOriginalFilename();
+            boolean valid = fileName != null && filesAllowed.stream().anyMatch(ext -> fileName.toLowerCase().endsWith(ext));
+            if(!valid){
+                errorMessages.add(fileName + " type is not allowed");
+            }
+        });
+        if(!errorMessages.isEmpty()) {
+            throw new BadRequestExceptionGlobal(
+                    String.join("/n", errorMessages),
+                    "fileManagement",
+                    "typefileinvlaid"
+            );
+        }
+
     }
 }

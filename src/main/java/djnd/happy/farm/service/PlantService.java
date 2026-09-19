@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -27,15 +28,25 @@ public class PlantService {
     final FileService fileService;
     final PlantImageRepository plantImageRepository;
     public void createNewPlantByAdmin(PlantDTO plantDTO) throws URISyntaxException, IOException {
-        String normalizedName = plantDTO.getDisplayName().trim();
-        if (plantRepository.existsByNameIgnoreCase(normalizedName.toLowerCase())) {
-            throw new DataConflictException(String.format("Plant with display name (%s) already exists", normalizedName), "plantManagement", "dataconflict");
+        String normalizedDisplayName = plantDTO.getDisplayName().trim();
+        if (plantRepository.existsByDisplayNameIgnoreCase(normalizedDisplayName.toLowerCase())) {
+            throw new DataConflictException(String.format("Plant with display name (%s) already exists", normalizedDisplayName), "plantManagement", "dataconflict");
         }
         Plant plant = new Plant();
-        plant.setDisplayName(normalizedName);
+
+        if(plantDTO.getScientificName() != null){
+            String normalizedScientificName = plantDTO.getScientificName().trim();
+            if(plantRepository.existsByScientificNameIgnoreCase(normalizedScientificName.toLowerCase())){
+                throw new DataConflictException(String.format("Plant with scientific name (%s) already exists", normalizedScientificName), "plantManagement", "dataconflict");
+            }
+            plant.setScientificName(normalizedScientificName);
+        }
+
+        plant.setDisplayName(normalizedDisplayName);
         plant.setDescription(plantDTO.getDescription());
         plant.setStatus(plantDTO.getStatus());
         plant.setDescriptionJson(plantDTO.getDescriptionJson());
+        plant.setIsCommunity(plantDTO.getIsCommunity());
         plantRepository.save(plant);
         if (plantDTO.getImages() != null && !plantDTO.getImages().isEmpty()) {
             List<PlantImage> newPlantImages = new ArrayList<>();
@@ -85,15 +96,22 @@ public class PlantService {
     }
 
     public void updatePlantByAdmin(PlantDTO plantDTO) {
-        String normalizedName = plantDTO.getDisplayName().trim();
-        if(plantRepository.existsByNameIgnoreCaseAndIdNot(normalizedName.toLowerCase(), plantDTO.getId())) {
-            throw new DataConflictException(String.format("Plant with display name (%s) already exists", normalizedName), "plantManagement", "dataconflict");
+        String normalizedDisplayName = plantDTO.getDisplayName().trim();
+        if(plantRepository.existsByDisplayNameIgnoreCaseAndIdNot(normalizedDisplayName.toLowerCase(), plantDTO.getId())) {
+            throw new DataConflictException(String.format("Plant with display name (%s) already exists", normalizedDisplayName), "plantManagement", "dataconflict");
         }
         Plant currentPlant = plantRepository.findById(plantDTO.getId()).orElseThrow(() -> new DataResourceNotFoundException(String.format("Plant with ID %d not found", plantDTO.getId()), "plantManagement", "idnotfound"));
-        currentPlant.setDisplayName(normalizedName);
+
+        if(plantDTO.getScientificName() != null && !plantDTO.getScientificName().isEmpty()) {
+            String normalizedScientificName = plantDTO.getScientificName().trim();
+            plantRepository.existsByScientificNameIgnoreCaseAndIdNot(normalizedScientificName.toLowerCase(Locale.ENGLISH), plantDTO.getId());
+            currentPlant.setScientificName(normalizedScientificName);
+        }
+        currentPlant.setDisplayName(normalizedDisplayName);
         currentPlant.setDescription(plantDTO.getDescription());
         currentPlant.setStatus(plantDTO.getStatus());
         currentPlant.setDescriptionJson(plantDTO.getDescriptionJson());
+        currentPlant.setIsCommunity(plantDTO.getIsCommunity());
         List<PlantImageDTO> newImages = plantDTO.getImages();
         if(newImages != null && !newImages.isEmpty()) {
             List<PlantImage> currentImages = plantImageRepository.findByPlantId(currentPlant.getId());
