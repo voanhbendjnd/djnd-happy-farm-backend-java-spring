@@ -6,19 +6,21 @@ import djnd.happy.farm.repository.PlantImageRepository;
 import djnd.happy.farm.repository.PlantRepository;
 import djnd.happy.farm.service.dto.PlantDTO;
 import djnd.happy.farm.service.dto.PlantImageDTO;
+import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.service.errors.DataConflictException;
 import djnd.happy.farm.service.errors.DataResourceNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Service
@@ -104,7 +106,9 @@ public class PlantService {
 
         if(plantDTO.getScientificName() != null && !plantDTO.getScientificName().isEmpty()) {
             String normalizedScientificName = plantDTO.getScientificName().trim();
-            plantRepository.existsByScientificNameIgnoreCaseAndIdNot(normalizedScientificName.toLowerCase(Locale.ENGLISH), plantDTO.getId());
+            if(plantRepository.existsByScientificNameIgnoreCaseAndIdNot(normalizedScientificName.toLowerCase(Locale.ENGLISH), plantDTO.getId())){
+                throw new DataConflictException(String.format("Plant with scientific name (%s) already exists", normalizedScientificName), "plantManagement", "dataconflict");
+            }
             currentPlant.setScientificName(normalizedScientificName);
         }
         currentPlant.setDisplayName(normalizedDisplayName);
@@ -121,6 +125,41 @@ public class PlantService {
         if(plantDTO.getImages() != null && !plantDTO.getImages().isEmpty()) {}
         plantRepository.save(currentPlant);
 
+    }
+
+    public ResultPaginationDTO fetchAllWithName(String q, Pageable pageable){
+        String normalizedQuery = "";
+        if(q != null && !q.isEmpty()) {
+            normalizedQuery = q.trim();
+        }
+        Page<Plant> page = plantRepository.fetchAllWithQuery(normalizedQuery, pageable);
+        ResultPaginationDTO res = new ResultPaginationDTO();
+        var meta = new ResultPaginationDTO.Meta();
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+        meta.setTotal(page.getTotalElements());
+        meta.setPages(page.getTotalPages());
+        res.setMeta(meta);
+        List<Long> currentPlantIds = page.getContent().stream().map(Plant::getId).toList();
+        Map<Long,List<PlantImage>> allCurrentImageWithPlants = plantImageRepository.findByPlantIdIn(currentPlantIds).stream()
+                .collect(Collectors.groupingBy(PlantImage::getPlantId));
+        res.setResult(page.getContent().stream().map(plant ->{
+            PlantDTO plantDTO = new PlantDTO();
+            plantDTO.setId(plant.getId());
+            plantDTO.setDisplayName(plant.getDisplayName());
+            plantDTO.setScientificName(plant.getScientificName());
+            plantDTO.setStatus(plant.getStatus());
+            plantDTO.setIsCommunity(plant.getIsCommunity());
+            List<PlantImage> images = allCurrentImageWithPlants.getOrDefault(plant.getId(), Collections.emptyList());
+            plantDTO.setImages(images.stream().map(x ->{
+                PlantImageDTO plantImageDTO = new PlantImageDTO();
+                plantImageDTO.setFileName(x.getImageUrl());
+                plantImageDTO.setIsPrimary(x.getIsPrimary());
+                return plantImageDTO;
+            }).toList());
+            return plantDTO;
+        }).toList());
+        return res;
     }
 
 

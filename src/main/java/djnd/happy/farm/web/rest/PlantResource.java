@@ -4,12 +4,14 @@ import djnd.happy.farm.domain.enums.PlantStatus;
 import djnd.happy.farm.service.FileService;
 import djnd.happy.farm.service.PlantService;
 import djnd.happy.farm.service.dto.PlantDTO;
+import djnd.happy.farm.service.dto.ResultPaginationDTO;
 import djnd.happy.farm.service.errors.BadRequestExceptionGlobal;
 import djnd.happy.farm.util.annotation.ApiMessage;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +51,9 @@ public class PlantResource {
         }
         isValidStatus(plantDTO.getStatus());
         plantService.createNewPlantByAdmin(plantDTO);
+    }
+    @GetMapping
+    public ResponseEntity<ResultPaginationDTO> fetchAll(@RequestParam(name = "q", required = false) String q, Pageable pageable){
+        return ResponseEntity.ok(plantService.fetchAllWithName(q, pageable));
     }
 }

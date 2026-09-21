@@ -12,4 +12,6 @@ import java.util.List;
 public interface PlantImageRepository extends JpaRepository<PlantImage, Long> {
     @Query(value = "select pi from PlantImage pi where pi.plantId = :plantId")
     List<PlantImage> findByPlantId(@Param("plantId") Long plantId);
+    @Query(value = "select pi from PlantImage pi where p.plantId in :plantIds")
+    List<PlantImage> findByPlantIdIn(@Param("plantIds") List<Long> plantIds);
 }
