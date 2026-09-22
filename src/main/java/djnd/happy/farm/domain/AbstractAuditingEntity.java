@@ -20,10 +20,9 @@ import java.time.Instant;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractAuditingEntity <T> implements Serializable {
+public abstract class AbstractAuditingEntity<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-
 
     public abstract T getId();
 
@@ -34,7 +33,7 @@ public abstract class AbstractAuditingEntity <T> implements Serializable {
     @CreatedDate
     @Column(name = "created_date", updatable = false)
     @JsonIgnore
-    private Instant createdDate =  Instant.now();
+    private Instant createdDate = Instant.now();
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
     @JsonIgnore
